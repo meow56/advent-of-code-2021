@@ -13,4 +13,17 @@ function day1(input) {
 		// Take advantage of short-circuiting!
 	});
 	displayText(`Number of depth increases: ${result.length}`);
+
+	let result2 = numbers.filter(function(elem, ind) {
+		return (ind > 2) && (elem > numbers[ind - 3]);
+		// Since the middle two numbers stay the same between consecutive sums
+		// we just have to check whether the current number is larger
+		// than the one three behind it.
+		/* A
+		 * A B <- the same!
+		 * A B <- the same!
+		 *   B
+		 */
+	});
+	displayText(`Number of running-sum depth increases: ${result2.length}`);
 }
