@@ -33,5 +33,47 @@ function day3(input) {
 		}
 	}
 
-	displayText(`Power usage: ${parseInt(gamma, 2) * parseInt(epsilon, 2)}`)
+	displayText(`Gamma rate: ${parseInt(gamma, 2)}`);
+	displayText(`Epsilon rate: ${parseInt(epsilon, 2)}`);
+	displayText(`Power usage: ${parseInt(gamma, 2) * parseInt(epsilon, 2)}`);
+
+	function detRating(what, nums, index = 0) {
+		// what: true = o2, false = co2
+		if(nums.length === 1) {
+			return nums[0];
+		}
+		if(nums.length === 0) {
+			throw `No rating`;
+		}
+		let count = 0;
+		nums.forEach(function(elem) {
+			// Get the number of 1s.
+			if(elem[index] === "1") {
+				count++;
+			}
+		});
+		if(what && count >= nums.length / 2) {
+			// 1 is more common or equally common,
+			// and we're doing oxygen.
+			return detRating(what, nums.filter(elem => elem[index] === "1"), index + 1);
+		} else if(what) {
+			// 0 is more common,
+			// and we're doing oxygen.
+			return detRating(what, nums.filter(elem => elem[index] === "0"), index + 1);
+		} else if(count < nums.length / 2) {
+			// 1 is more common,
+			// and we're doing carbon dioxide.
+			return detRating(what, nums.filter(elem => elem[index] === "1"), index + 1);
+		} else {
+			// 0 is more common or equally common,
+			// and we're doing carbon dioxide.
+			return detRating(what, nums.filter(elem => elem[index] === "0"), index + 1);
+		}
+	}
+
+	let oxyRat = detRating(true, num);
+	let coRat = detRating(false, num);
+	displayText(`O2 Rating: ${parseInt(oxyRat, 2)}`);
+	displayText(`CO2 Rating: ${parseInt(coRat, 2)}`);
+	displayText(`Life Rating: ${parseInt(oxyRat, 2) * parseInt(coRat, 2)}`);
 }
