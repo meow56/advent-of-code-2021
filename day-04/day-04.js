@@ -17,8 +17,10 @@ function day4(input) {
 						 [false, false, false, false, false],
 						 [false, false, false, false, false],
 						 [false, false, false, false, false]];
+		this.isVictorious = false;
 
 		this.mark = function(number) {
+			if(this.isVictorious) return;
 			let temp = this.board.slice().flat();
 			let numIndex = temp.findIndex(elem => elem === number);
 			if(numIndex === -1) return;
@@ -26,7 +28,17 @@ function day4(input) {
 		}
 
 		this.victory = function() {
+			if(this.isVictorious) return false;
 			let victorious = this.isCalled.reduce((acc, value) => acc || value.every(e => e), false);
+			for(let i = 0; i < this.isCalled[0].length; i++) {
+				let vertorious = true;
+				for(let j = 0; j < this.isCalled.length; j++) {
+					if(!this.isCalled[j][i]) {
+						vertorious = false;
+					}
+				}
+				victorious = victorious || vertorious;
+			}
 			if(victorious) {
 				let sum = 0;
 				for(let i = 0; i < this.isCalled.length; i++) {
@@ -38,9 +50,33 @@ function day4(input) {
 						}
 					}
 				}
+				this.isVictorious = true;
 				return sum;
 			}
 			return false;
+		}
+
+		this.display = function() {
+			for(let i = 0; i < this.isCalled.length; i++) {
+				let row = this.isCalled[i];
+				let toDisp = "";
+				for(let j = 0; j < row.length; j++) {
+					if(row[j]) {
+						if(this.board[i][j].toString().length === 1) {
+							toDisp += `!0${this.board[i][j]}!`;
+						} else {
+							toDisp += `!${this.board[i][j]}!`;
+						}
+					} else {
+						if(this.board[i][j].toString().length === 1) {
+							toDisp += `-0${this.board[i][j]}-`;
+						} else {
+							toDisp += `-${this.board[i][j]}-`;
+						}
+					}
+				}
+				displayText(toDisp);
+			}
 		}
 	}
 
@@ -62,7 +98,9 @@ function day4(input) {
 		for(let i = 0; i < boards.length; i++) {
 			let result = boards[i].victory();
 			if(result !== false) {
-				displayText(`Bingo! Score: ${result * elem}`);
+				displayText(`Bingo on board ${i}! Score: ${result * elem}`);
+				displayText(`Board:`);
+				boards[i].display();
 			}
 		}
 	});
