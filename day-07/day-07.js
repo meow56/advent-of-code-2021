@@ -16,12 +16,19 @@ function day7(input) {
 	//console.log(crabs);
 	//console.log(`Lowest: ${lowest}, Highest: ${highest}`);
 
+	function triNum(n) { return n * (n + 1) / 2; }
+
 	let fuelCosts = [];
+	let triFuelCosts = [];
 	for(let i = lowest; i < highest; i++) {
 		//console.groupCollapsed(`Testing position ${i}`);
 		fuelCosts[i - lowest] = crabs.reduce(function(total, crab) {
 			//console.log(`Moving crab ${crab} to ${i} costs ${Math.abs(i - crab)}`);
 			return total + Math.abs(i - crab);
+		}, 0);
+		triFuelCosts[i - lowest] = crabs.reduce(function(total, crab) {
+			//console.log(`Moving crab ${crab} to ${i} costs ${Math.abs(i - crab)}`);
+			return total + triNum(Math.abs(i - crab));
 		}, 0);
 		//console.log(`Moving to ${i} costs ${fuelCosts[i - lowest]}.`);
 		//console.groupEnd();
@@ -36,4 +43,13 @@ function day7(input) {
 		}
 	}, 1000000000000000);
 	displayText(`Please align at ${lowIndex}, cost: ${lowestCost}`);
+	lowestCost = triFuelCosts.reduce(function(lowCost, cost, ind) {
+		if(cost < lowCost) {
+			lowIndex = ind;
+			return cost;
+		} else {
+			return lowCost;
+		}
+	}, 1000000000000000);
+	displayText(`No, wait. Align at ${lowIndex}, cost: ${lowestCost}`);
 }
