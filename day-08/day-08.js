@@ -53,150 +53,265 @@ function day8(input) {
 	 * Now, of the two other 6ns, 4 includes D but not E. So the one that appears in 4
 	 * must be D and the other is E.
 	 */
+
+	const SEV_SEG = [
+		new Set("abcefg".split("")),
+		new Set("cf".split("")),
+		new Set("acdeg".split("")),
+		new Set("acdfg".split("")),
+		new Set("bdcf".split("")),
+		new Set("abdfg".split("")),
+		new Set("abdefg".split("")),
+		new Set("acf".split("")),
+		new Set("abcdefg".split("")),
+		new Set("abcdfg".split(""))
+	]
+	function sevenSeg(num) {
+		// num is a string, don't be fooled.
+		let firstRow = ".";
+		let row23 = ".";
+		let row4 = ".";
+		let row56 = ".";
+		let row7 = ".";
+		let lookingAt = +num[0];
+		const HOR_ON = ".####..";
+		const OFF = ".......";
+		const VER12 = "#....#.";
+		const VER1 = "#......";
+		const VER2 = ".....#.";
+		if(SEV_SEG[lookingAt].has("a")) {
+			firstRow += HOR_ON;
+		} else {
+			firstRow += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER12;
+		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
+			row23 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER2;
+		} else {
+			row23 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("d")) {
+			row4 += HOR_ON;
+		} else {
+			row4 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER12;
+		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
+			row56 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER2;
+		} else {
+			row56 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("g")) {
+			row7 += HOR_ON;
+		} else {
+			row7 += OFF;
+		}
+		lookingAt = +num[1];
+		if(SEV_SEG[lookingAt].has("a")) {
+			firstRow += HOR_ON;
+		} else {
+			firstRow += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER12;
+		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
+			row23 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER2;
+		} else {
+			row23 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("d")) {
+			row4 += HOR_ON;
+		} else {
+			row4 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER12;
+		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
+			row56 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER2;
+		} else {
+			row56 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("g")) {
+			row7 += HOR_ON;
+		} else {
+			row7 += OFF;
+		}
+		lookingAt = +num[2];
+		if(SEV_SEG[lookingAt].has("a")) {
+			firstRow += HOR_ON;
+		} else {
+			firstRow += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER12;
+		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
+			row23 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER2;
+		} else {
+			row23 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("d")) {
+			row4 += HOR_ON;
+		} else {
+			row4 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER12;
+		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
+			row56 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER2;
+		} else {
+			row56 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("g")) {
+			row7 += HOR_ON;
+		} else {
+			row7 += OFF;
+		}
+		lookingAt = +num[3];
+		if(SEV_SEG[lookingAt].has("a")) {
+			firstRow += HOR_ON;
+		} else {
+			firstRow += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER12;
+		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
+			row23 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+			row23 += VER2;
+		} else {
+			row23 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("d")) {
+			row4 += HOR_ON;
+		} else {
+			row4 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER12;
+		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
+			row56 += VER1;
+		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+			row56 += VER2;
+		} else {
+			row56 += OFF;
+		}
+		if(SEV_SEG[lookingAt].has("g")) {
+			row7 += HOR_ON;
+		} else {
+			row7 += OFF;
+		}
+		displayText(firstRow);
+		displayText(row23);
+		displayText(row23);
+		displayText(row4);
+		displayText(row56);
+		displayText(row56);
+		displayText(row7);
+		displayText();
+	}
+
 	let total = 0;
 	for(let i = 0; i < digits.length; i++) {
-		let one = digits[i].filter(e => e.length === 2)[0];
-		let four = digits[i].filter(e => e.length === 4)[0];
-		let seven = digits[i].filter(e => e.length === 3)[0];
-		let eight = digits[i].filter(e => e.length === 7)[0];
+		let one = new Set(digits[i].filter(e => e.length === 2)[0].split(""));
+		let four = new Set(digits[i].filter(e => e.length === 4)[0].split(""));
+		let seven = new Set(digits[i].filter(e => e.length === 3)[0].split(""));
+		let eight = new Set(digits[i].filter(e => e.length === 7)[0].split(""));
 
-		let A;
-		if(one.includes(seven[0])) {
-			if(one.includes(seven[1])) {
-				A = seven[2];
-			} else {
-				A = seven[1];
+		let A, C, D, E;
+		seven.forEach(function(segment) {
+			if(!one.has(segment)) {
+				A = segment;
+			}
+		});
+
+		let n6_1 = new Set(digits[i].filter(e => e.length === 6)[0].split(""));
+		let n6_2 = new Set(digits[i].filter(e => e.length === 6)[1].split(""));
+		let n6_3 = new Set(digits[i].filter(e => e.length === 6)[2].split(""));
+		one.forEach(function(segment) {
+			if(!n6_1.has(segment) || !n6_2.has(segment) || !n6_3.has(segment)) {
+				C = segment;
+			}
+		});
+		four.forEach(function(segment) {
+			if(segment !== C) {
+				if(!n6_1.has(segment) || !n6_2.has(segment) || !n6_3.has(segment)) {
+					D = segment;
+				}
+			}
+		});
+		if(n6_1.has(C) && n6_1.has(D)) {
+			for(let i = 0; i < "abcdefg".length; i++) {
+				if(!n6_1.has("abcdefg"[i])) {
+					E = "abcdefg"[i];
+				}
+			}
+		} else if(n6_2.has(C) && n6_2.has(D)) {
+			for(let i = 0; i < "abcdefg".length; i++) {
+				if(!n6_2.has("abcdefg"[i])) {
+					E = "abcdefg"[i];
+				}
+			}
+		} else if(n6_3.has(C) && n6_3.has(D)) {
+			for(let i = 0; i < "abcdefg".length; i++) {
+				if(!n6_3.has("abcdefg"[i])) {
+					E = "abcdefg"[i];
+				}
 			}
 		} else {
-			A = seven[0];
+			throw `Wait, where's 9?`;
 		}
 
-		let nice = digits[i].filter(e => e.length === 6); // 0, 6 and 9
-		let missing1 = nice[0].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let missing2 = nice[1].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let missing3 = nice[2].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let C;
-		let D;
-		let E;
-		let zero;
-		let six;
-		let nine;
-		if(one.includes(missing1)) {
-			C = missing1;
-			six = nice[0];
-		} else if(one.includes(missing2)) {
-			C = missing2;
-			six = nice[1];
-		} else {
-			C = missing3;
-			six = nice[2];
-		}
-
-		if(!one.includes(missing1) && four.includes(missing1)) {
-			D = missing1;
-			zero = nice[0];
-			E = C === missing2 ? missing3 : missing2;
-			nine = six === nice[1] ? nice[2] : nice[1];
-		} else if(!one.includes(missing2) && four.includes(missing2)) {
-			D = missing2;
-			zero = nice[1];
-			E = C === missing3 ? missing1 : missing3;
-			nine = six === nice[2] ? nice[0] : nice[2];
-		} else {
-			D = missing3;
-			zero = nice[2];
-			E = C === missing1 ? missing2 : missing1;
-			nine = six === nice[0] ? nice[1] : nice[0];
-		}
-
-		// 2: ACDEG (no B, F)
-		// 3: ACDFG (no B, E)
-		// 5: ABDFG (no C, E)
-		let finalFive = digits[i].filter(e => e.length === 5);
-		let missing4 = finalFive[0].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let missing5 = finalFive[1].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let missing6 = finalFive[2].split("").reduce(function(acc, value) {
-			return acc.replace(value, "");
-		}, "abcdefg");
-		let two;
-		let three;
-		let five;
-		if(missing4.includes(C) && missing4.includes(E)) {
-			five = finalFive[0];
-		} else if(missing5.includes(C) && missing5.includes(E)) {
-			five = finalFive[1];
-		} else {
-			five = finalFive[2];
-		}
-
-		if(missing4.includes(C) && !missing4.includes(E)) {
-			three = finalFive[0];
-		} else if(missing5.includes(C) && !missing5.includes(E)) {
-			three = finalFive[1];
-		} else {
-			three = finalFive[2];
-		}
-
-		if(!missing4.includes(C) && !missing4.includes(E)) {
-			two = finalFive[0];
-		} else if(!missing5.includes(C) && !missing5.includes(E)) {
-			two = finalFive[1];
-		} else {
-			two = finalFive[2];
-		}
-		
-		displayText(`I think ${A} is A, ${C} is C, ${D} is D, and ${E} is E.`);
-		let finalNum = outputs[i].reduce(function(acc, val) {
-			if(val.length === 2) {
-				return acc + "1";
-			} else if(val.length === 4) {
-				return acc + "4";
-			} else if(val.length === 3) {
-				return acc + "7";
-			} else if(val.length === 7) {
-				return acc + "8";
-			} else if(val.length === 6) {
-				let missing = val.split("").reduce(function(accu, value) {
-					return accu.replace(value, "");
-				}, "abcdefg");
-				if(missing === D) {
-					return acc + "0";
-				} else if(missing === C) {
-					return acc + "6";
-				} else if(missing === E) {
-					return acc + "9";
+		let finalOut = outputs[i].reduce(function(display, digit) {
+			if(digit.length === 2) {
+				return display + "1";
+			} else if(digit.length === 4) {
+				return display + "4";
+			} else if(digit.length === 3) {
+				return display + "7";
+			} else if(digit.length === 7) {
+				return display + "8";
+			} else if(digit.length === 5) {
+				let digSet = new Set(digit.split(""));
+				if(digSet.has(C) && digSet.has(E)) {
+					return display + "2";
+				} else if(digSet.has(C) && !digSet.has(E)) {
+					return display + "3";
+				} else if(!digSet.has(C) && !digSet.has(E)) {
+					return display + "5";
 				} else {
-					throw `Val ${val} is length 6, but is not missing D, C, or E (${D}, ${C}, ${E}).`;
+					throw `Digit ${digit} has ${E} but not ${C}`;
 				}
-			} else if(val.length === 5) {
-				let missing = val.split("").reduce(function(accu, value) {
-					return accu.replace(value, "");
-				}, "abcdefg");
-				if(missing.includes(C) && missing.includes(E)) {
-					return acc + "5";
-				} else if(!missing.includes(C) && missing.includes(E)) {
-					return acc + "3";
-				} else if(!missing.includes(C) && !missing.includes(E)) {
-					return acc + "2";
+			} else if(digit.length === 6) {
+				let digSet = new Set(digit.split(""));
+				if(!digSet.has(D)) {
+					return display + "0";
+				} else if(!digSet.has(C)) {
+					return display + "6";
+				} else if(!digSet.has(E)) {
+					return display + "9";
 				} else {
-					throw `Val ${val} is missing C (${C}) but not E (${E}).`;
+					throw `Digit ${digit} is missing weird stuff.`;
 				}
 			} else {
-				throw `Val ${val} is of length ${val.length}.`;
+				throw `Invalid length for digit ${digit}`;
 			}
 		}, "");
-		displayText(`Sorry, did you mean: ${finalNum}?`);
-		total += +finalNum;
+		sevenSeg(finalOut);
+		total += +finalOut;
 	}
-	displayText(`That means that in total, we have ${total}.`);
+	displayText(`Thus, the total is ${total}.`);
 }
