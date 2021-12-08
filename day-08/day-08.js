@@ -68,151 +68,51 @@ function day8(input) {
 	]
 	function sevenSeg(num) {
 		// num is a string, don't be fooled.
-		let firstRow = ".";
-		let row23 = ".";
-		let row4 = ".";
-		let row56 = ".";
-		let row7 = ".";
-		let lookingAt = +num[0];
-		const HOR_ON = ".####..";
-		const OFF = ".......";
-		const VER12 = "#....#.";
-		const VER1 = "#......";
-		const VER2 = ".....#.";
-		if(SEV_SEG[lookingAt].has("a")) {
-			firstRow += HOR_ON;
-		} else {
-			firstRow += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER12;
-		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
-			row23 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER2;
-		} else {
-			row23 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("d")) {
-			row4 += HOR_ON;
-		} else {
-			row4 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER12;
-		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
-			row56 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER2;
-		} else {
-			row56 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("g")) {
-			row7 += HOR_ON;
-		} else {
-			row7 += OFF;
-		}
-		lookingAt = +num[1];
-		if(SEV_SEG[lookingAt].has("a")) {
-			firstRow += HOR_ON;
-		} else {
-			firstRow += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER12;
-		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
-			row23 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER2;
-		} else {
-			row23 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("d")) {
-			row4 += HOR_ON;
-		} else {
-			row4 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER12;
-		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
-			row56 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER2;
-		} else {
-			row56 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("g")) {
-			row7 += HOR_ON;
-		} else {
-			row7 += OFF;
-		}
-		lookingAt = +num[2];
-		if(SEV_SEG[lookingAt].has("a")) {
-			firstRow += HOR_ON;
-		} else {
-			firstRow += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER12;
-		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
-			row23 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER2;
-		} else {
-			row23 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("d")) {
-			row4 += HOR_ON;
-		} else {
-			row4 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER12;
-		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
-			row56 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER2;
-		} else {
-			row56 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("g")) {
-			row7 += HOR_ON;
-		} else {
-			row7 += OFF;
-		}
-		lookingAt = +num[3];
-		if(SEV_SEG[lookingAt].has("a")) {
-			firstRow += HOR_ON;
-		} else {
-			firstRow += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER12;
-		} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
-			row23 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
-			row23 += VER2;
-		} else {
-			row23 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("d")) {
-			row4 += HOR_ON;
-		} else {
-			row4 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER12;
-		} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
-			row56 += VER1;
-		} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
-			row56 += VER2;
-		} else {
-			row56 += OFF;
-		}
-		if(SEV_SEG[lookingAt].has("g")) {
-			row7 += HOR_ON;
-		} else {
-			row7 += OFF;
+		let firstRow = "";
+		let row23 = "";
+		let row4 = "";
+		let row56 = "";
+		let row7 = "";
+		const HOR_ON = " ████  ";
+		const OFF = " ░░░░  ";
+		const VER12 = "█    █ ";
+		const VER1 = "█    ░ ";
+		const VER2 = "░    █ ";
+		for(let i = 0; i < num.length; i++) {
+			let lookingAt = +num[i];
+			if(SEV_SEG[lookingAt].has("a")) {
+				firstRow += HOR_ON;
+			} else {
+				firstRow += OFF;
+			}
+			if(SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+				row23 += VER12;
+			} else if(SEV_SEG[lookingAt].has("b") && !SEV_SEG[lookingAt].has("c")) {
+				row23 += VER1;
+			} else if(!SEV_SEG[lookingAt].has("b") && SEV_SEG[lookingAt].has("c")) {
+				row23 += VER2;
+			} else {
+				row23 += OFF;
+			}
+			if(SEV_SEG[lookingAt].has("d")) {
+				row4 += HOR_ON;
+			} else {
+				row4 += OFF;
+			}
+			if(SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+				row56 += VER12;
+			} else if(SEV_SEG[lookingAt].has("e") && !SEV_SEG[lookingAt].has("f")) {
+				row56 += VER1;
+			} else if(!SEV_SEG[lookingAt].has("e") && SEV_SEG[lookingAt].has("f")) {
+				row56 += VER2;
+			} else {
+				row56 += OFF;
+			}
+			if(SEV_SEG[lookingAt].has("g")) {
+				row7 += HOR_ON;
+			} else {
+				row7 += OFF;
+			}
 		}
 		displayText(firstRow);
 		displayText(row23);
@@ -313,5 +213,6 @@ function day8(input) {
 		sevenSeg(finalOut);
 		total += +finalOut;
 	}
-	displayText(`Thus, the total is ${total}.`);
+	displayText(`Thus, the total is:`);
+	sevenSeg(total.toString());
 }
