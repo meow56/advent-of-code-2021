@@ -26,4 +26,50 @@ function day1(input) {
 		 */
 	});
 	displayText(`Number of running-sum depth increases: ${result2.length}`);
+	updateCaption(`A graph of the seafloor is shown.`);
+	updateCaption(`Above it are the number of depth increases (${result.length})`);
+	updateCaption(`and the number of running-sum depth increases (${result2.length}).`);
+
+	let startDepth = 0; // Where should the graph start?
+	let lineInc = 10; // How many units should each line represent?
+
+	let lowestDepth = 0;
+	let positions = numbers.map(function(elem) {
+		if((elem - startDepth) / lineInc > lowestDepth) {
+			lowestDepth = (elem - startDepth) / lineInc;
+		}
+		return (elem - startDepth) / lineInc;
+	});
+	displayText("".padStart(numbers.length, "~"));
+	// ¯―_
+	// YMMV on whether these are the best characters for this.
+	let currentDepth = startDepth;
+	while(currentDepth < lowestDepth) {
+		let toDisplay = "";
+		let ignore = 0;
+		positions.forEach(function(depth, index) {
+			if(ignore !== 0) {
+				ignore--;
+			} else {
+				if(Math.floor(depth) === currentDepth) {
+					let fracPart = depth - Math.floor(depth);
+					if(fracPart < 1 / 3) {
+						toDisplay += "¯";
+					} else if(fracPart < 2 / 3) {
+						toDisplay += "―";
+					} else {
+						toDisplay += "_";
+					}
+					if(index % 100 === 0) {
+						toDisplay += numbers[index].toString().padStart(4, "0");
+						ignore += 4;
+					}
+				} else {
+					toDisplay += " ";
+				}
+			}
+		});
+		displayText(toDisplay);
+		currentDepth++;
+	}
 }
