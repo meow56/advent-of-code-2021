@@ -51,24 +51,24 @@ function day5(input) {
 			highestY = +coord[0];
 		}
 	});
-	let firstX = "~~~~";
-	let secondX = "~~~~";
-	let thirdX = "~~~~";
+	let firstX = "    ";
+	let secondX = "    ";
+	let thirdX = "    ";
 	for(let x = 0; x < highestX; x++) {
 		if(x % 10 === 0) {
 			firstX += Math.floor(x / 100);
 			secondX += Math.floor(x % 100 / 10);
 			thirdX += "0";
 		} else {
-			firstX += "_";
-			secondX += "_";
-			thirdX += "_";
+			firstX += " ";
+			secondX += " ";
+			thirdX += " ";
 		}
 	}
 	displayText(firstX);
 	displayText(secondX);
 	displayText(thirdX);
-	displayText("~~~@".padEnd(highestX + 4, "@"));
+	displayText("   @".padEnd(highestX + 4, "@"));
 	for(let y = 0; y < highestY; y++) {
 		let toDisplay = y.toString() + "@";
 		toDisplay = toDisplay.padStart(4, "0");
@@ -78,11 +78,13 @@ function day5(input) {
 				if(board.get(xYKey) >= 10) console.warn(`Value of ${xYKey} is two or more digits long.`);
 				toDisplay += board.get(xYKey);
 			} else {
-				toDisplay += ".";
+				toDisplay += " ";
 			}
 		}
 		displayText(toDisplay);
 	}
+	updateCaption(`A graph of every horizontal and vertical line.`);
+	updateCaption(`This is followed by the number of overlaps: ${doubled}.`);
 	displayText(`Overlap points: ${doubled}`);
 	lines.forEach(function(line) {
 		if(line[0][0] !== line[1][0] && line[0][1] !== line[1][1]) {
@@ -122,24 +124,24 @@ function day5(input) {
 			highestY = +coord[0];
 		}
 	});
-	firstX = "~~~~";
-	secondX = "~~~~";
-	thirdX = "~~~~";
+	firstX = "    ";
+	secondX = "    ";
+	thirdX = "    ";
 	for(let x = 0; x < highestX; x++) {
 		if(x % 10 === 0) {
 			firstX += Math.floor(x / 100);
 			secondX += Math.floor(x % 100 / 10);
 			thirdX += "0";
 		} else {
-			firstX += "_";
-			secondX += "_";
-			thirdX += "_";
+			firstX += " ";
+			secondX += " ";
+			thirdX += " ";
 		}
 	}
 	displayText(firstX);
 	displayText(secondX);
 	displayText(thirdX);
-	displayText("~~~@".padEnd(highestX + 4, "@"));
+	displayText("   @".padEnd(highestX + 4, "@"));
 	for(let y = 0; y < highestY; y++) {
 		let toDisplay = y.toString() + "@";
 		toDisplay = toDisplay.padStart(4, "0");
@@ -149,10 +151,12 @@ function day5(input) {
 				if(board.get(xYKey) >= 10) console.warn(`Value of ${xYKey} is two or more digits long.`);
 				toDisplay += board.get(xYKey);
 			} else {
-				toDisplay += ".";
+				toDisplay += " ";
 			}
 		}
 		displayText(toDisplay);
 	}
+	updateCaption(`Following this is a graph of every line in the input.`);
+	updateCaption(`This is followed by the number of overlaps: ${doubled}.`);
 	displayText(`Overlap points \\/2: ${doubled}`);
 }
