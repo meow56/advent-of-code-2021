@@ -27,6 +27,7 @@ function day8(input) {
 		});
 	});
 	displayText(`Number of 1, 4, 7, or 8: ${uniqueNums}`);
+	updateCaption(`Number of 1, 4, 7, or 8: ${uniqueNums}`);
 
 	/* Done: ACDEF
 	 *  AAAA 
@@ -215,4 +216,7 @@ function day8(input) {
 	}
 	displayText(`Thus, the total is:`);
 	sevenSeg(total.toString());
+	updateCaption(`A long list of seven-segment displays. Each one displays the value that was supposed to be displayed from the input.`);
+	updateCaption(`After all of that, there is the text "Thus, the total is:" followed by another seven-segment display showing the totals`);
+	updateCaption(`of all the previous seven-segment displays: ${total}.`);
 }

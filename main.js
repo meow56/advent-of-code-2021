@@ -1,7 +1,9 @@
 "use strict";
 
-const inputElement = document.getElementById("input");
-inputElement.addEventListener("change", handleFiles, false);
+window.onload = function() {
+	document.getElementById("input").addEventListener("change", handleFiles, false);
+}
+
 function handleFiles() {
 	const input = this.files[0];
 	input.text().then(text => detDay(text));
@@ -89,19 +91,24 @@ function handleFiles() {
 	}
 }
 
-function displayText(text) {
-	const displayDiv = document.getElementById("displayDiv");
-	const displayP = document.createElement("SPAN");
-	displayP.textContent = text;
-	displayDiv.appendChild(displayP);
-	displayDiv.appendChild(document.createElement("BR"));
+function displayText(text = "") {
+	const display = document.getElementById("display");
+	display.textContent += text + "\n";
+}
+
+function updateCaption(text = "") {
+	const caption = document.getElementById("caption");
+	caption.textContent += text + "\n";
 }
 
 function clearText() {
-	const displayDiv = document.getElementById("displayDiv");
-	while(displayDiv.firstChild !== null) {
-		displayDiv.removeChild(displayDiv.firstChild);
-	}
+	const display = document.getElementById("display");
+	display.textContent = "";
+}
+
+function clearCaption(text = "") {
+	const caption = document.getElementById("caption");
+	caption.textContent = "";
 }
 
 
