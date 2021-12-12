@@ -34,23 +34,31 @@ function day12(input) {
 		}
 	}
 
-	function findPaths(curCave, visited) {
+	function findPaths(curCave, visited, doubled) {
 		// curCave: the current Cave we are in
 		// visited: array of Caves already visited
+		// doubled: bool--have we visited a small cave twice?
 		if(curCave.name === "end") return [visited];
 		let futurePaths = [];
 		curCave.connections.forEach(function(destination) {
 			if(destination.isBig) {
 				let newVisited = visited.slice();
 				newVisited.push(curCave);
-				futurePaths.push(findPaths(destination, newVisited));
+				futurePaths.push(findPaths(destination, newVisited, doubled));
 			} else if(typeof visited.find(seenBefore => seenBefore.name === destination.name) === "undefined") {
 				// It's small, but we haven't seen it yet.
 				let newVisited = visited.slice();
 				newVisited.push(curCave);
-				futurePaths.push(findPaths(destination, newVisited));
+				futurePaths.push(findPaths(destination, newVisited, doubled));
+			} else if(!doubled && destination.name !== "start") {
+				// It's small, and we've seen it before.
+				// But we haven't used our double yet.
+				let newVisited = visited.slice();
+				newVisited.push(curCave);
+				futurePaths.push(findPaths(destination, newVisited, true));
 			} else {
 				// It's small, and we've seen it before.
+				// Now we have used our double.
 			}
 		});
 		if(futurePaths.length === 0) {
@@ -62,11 +70,15 @@ function day12(input) {
 	}
 
 	let paths;
+	let doublePaths;
 	for(let i = 0; i < caves.length; i++) {
 		if(caves[i].name === "start") {
-			paths = findPaths(caves[i], []);
+			paths = findPaths(caves[i], [], true);
+			doublePaths = findPaths(caves[i], [], false);
 		}
 	}
 	displayText(`Number of paths: ${paths.length}`);
 	updateCaption(`The number of paths from start to end is displayed: ${paths.length}`);
+	displayText(`Number of double paths: ${doublePaths.length}`);
+	updateCaption(`The number of double paths from start to end is displayed: ${doublePaths.length}`);
 }
