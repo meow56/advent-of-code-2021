@@ -111,5 +111,20 @@ function clearCaption(text = "") {
 	caption.textContent = "";
 }
 
+function assignBlock(id) {
+	const display = document.getElementById("display");
+	if(document.getElementById(id) !== null) {
+		throw `A block with ID ${id} already exists.`;
+	}
+	let NEW_PRE = document.createElement("PRE");
+	NEW_PRE.id = id;
+	NEW_PRE.displayText = function(text = "") {
+		//const display = document.getElementById(this.id);
+		this.textContent += text + "\n";
+	}.bind(NEW_PRE);
+	display.parentNode.appendChild(NEW_PRE);
+	return NEW_PRE;
+}
+
 
 const devMode = false;
