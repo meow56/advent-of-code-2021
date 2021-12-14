@@ -44,7 +44,7 @@ CN -> C`;*/
 		}
 	}
 
-	const STEPS = 10;
+	const STEPS = 40;
 	for(let i = 0; i < STEPS; i++) {
 		let workingPolyMap = new Map();
 		polyMap.forEach(function(num, pair) {
