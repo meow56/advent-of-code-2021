@@ -119,8 +119,10 @@ function assignBlock(id) {
 	let NEW_PRE = document.createElement("PRE");
 	NEW_PRE.id = id;
 	NEW_PRE.displayText = function(text = "") {
-		//const display = document.getElementById(this.id);
 		this.textContent += text + "\n";
+	}.bind(NEW_PRE);
+	NEW_PRE.clearText = function(text = "") {
+		this.textContent = "";
 	}.bind(NEW_PRE);
 	display.parentNode.appendChild(NEW_PRE);
 	return NEW_PRE;
