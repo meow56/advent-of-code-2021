@@ -5,6 +5,7 @@ window.onload = function() {
 }
 
 function handleFiles() {
+	clearText();
 	const input = this.files[0];
 	input.text().then(text => detDay(text));
 
