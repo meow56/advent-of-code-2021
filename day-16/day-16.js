@@ -1,7 +1,10 @@
 "use strict";
 
 function day16(input) {
-	//input = `C0015000016115A2E0802F182340`;
+	//input = `9C0141080250320F1802104A08`;
+	// too low: 333434623067, 
+	//           61337102730
+	// doh!!!
 	const FILE_REGEX = /(?:\d|[A-F])+/gm;
 	let hex;
 	let entry;
@@ -45,11 +48,6 @@ function day16(input) {
 				return acc + "1111";
 		}
 	}, "").split("");
-	let binCopy = bin.slice();
-	console.log(bin.join(""));
-	console.log(hex.join(""));
-	console.log(parseInt(bin.join(""), 2));
-	console.log(parseInt(hex.join(""), 16));
 
 	function readScope() {
 		let rIndex = 0;
@@ -84,11 +82,11 @@ function day16(input) {
 		this.value;
 		this.len = 0;
 		this.parent = parent || false;
+		this.childPackets = [];
 
-		this.evaluate = function() {
+		this.evaluate = function(spacer = "") {
 			this.ver = read(3);
 			this.type = read(3);
-			console.groupCollapsed(`Packet with ver ${this.ver} and type ${this.type}`);
 			this.len += 6;
 			if(this.type === "100") {
 				// Literal.
@@ -100,39 +98,101 @@ function day16(input) {
 				// We hit a zero, but we still have to read 4 more bits.
 				this.value += read(4);
 				this.len += 5;
-				console.log(`Value: ${this.value}`);
-				console.groupEnd();
-				return parseInt(this.value, 2);
+				this.value = parseInt(this.value, 2);
+				displayText(`${spacer}Literal value: ${this.value}`);
+				//console.groupEnd();
 			} else {
+				displayText(`${spacer}Packet with type ${parseInt(this.type, 2)}`);
 				if(read() === "0") {
 					// bit length
 					this.bitLength = parseInt(read(15), 2);
 					this.len += 16;
-					console.log(`Child bitlength: ${this.bitLength}`);
 					while(this.bitLength !== 0) {
-						console.log(`Current length: ${this.bitLength}`);
 						let childPacket = new Packet(this);
+						this.childPackets.push(childPacket);
 						packets.push(childPacket);
-						childPacket.evaluate();
+						childPacket.evaluate(spacer + "  ");
 						this.bitLength -= childPacket.len;
 						this.len += childPacket.len;
 					}
-					console.log(`Length of this packet: ${this.len}`);
-					console.groupEnd();
 				} else {
 					// subpacket length
 					this.packetLength = parseInt(read(11), 2);
 					this.len += 12;
-					console.log(`Child packets: ${this.packetLength}`);
 					while(this.packetLength !== 0) {
 						let childPacket = new Packet(this);
+						this.childPackets.push(childPacket);
 						packets.push(childPacket);
-						childPacket.evaluate();
+						childPacket.evaluate(spacer + "  ");
 						this.packetLength--;
 						this.len += childPacket.len;
 					}
-					console.groupEnd();
 				}
+
+				spacer += "  ";
+				let toDisplay;
+				switch(this.type) {
+					case "000":
+						[this.value, toDisplay] = this.childPackets.reduce((function(acc, pack, index, arr) {
+							let temp;
+							if(index === 0) {
+								temp = `${arr.length === 1 ? "0 + " : ""}${pack.value}`;
+							} else {
+								temp = ` + ${pack.value}`;
+							}
+							return [acc[0] + pack.value, acc[1] + temp];
+						}), [0, ""]);
+						displayText(spacer + toDisplay);
+						break;
+					case "001":
+						[this.value, toDisplay] = this.childPackets.reduce((function(acc, pack, index, arr) {
+							let temp;
+							if(index === 0) {
+								temp = `${arr.length === 1 ? "1 * " : ""}${pack.value}`;
+							} else {
+								temp = ` * ${pack.value}`;
+							}
+							return [acc[0] * pack.value, acc[1] + temp];
+						}), [1, ""]);
+						displayText(spacer + toDisplay);
+						break;
+					case "010":
+						displayText(`${spacer}min(${this.childPackets.reduce(function(acc, pack, index) {
+							if(index === 0) {
+								return acc + pack.value;
+							} else {
+								return acc + `, ${pack.value}`;
+							}
+						}, "")})`);
+						this.value = Math.min(...(this.childPackets.map(e => e.value)));
+						break;
+					case "011":
+						displayText(`${spacer}max(${this.childPackets.reduce(function(acc, pack, index) {
+							if(index === 0) {
+								return acc + pack.value;
+							} else {
+								return acc + `, ${pack.value}`;
+							}
+						}, "")})`);
+						this.value = Math.max(...(this.childPackets.map(e => e.value)));
+						break;
+					case "101":
+						displayText(`${spacer}${this.childPackets[0].value} > ${this.childPackets[1].value}`);
+						this.value = +(this.childPackets[0].value > this.childPackets[1].value);
+						break;
+					case "110":
+						displayText(`${spacer}${this.childPackets[0].value} < ${this.childPackets[1].value}`);
+						this.value = +(this.childPackets[0].value < this.childPackets[1].value);
+						break;
+					case "111":
+						displayText(`${spacer}${this.childPackets[0].value} === ${this.childPackets[1].value}`);
+						this.value = +(this.childPackets[0].value === this.childPackets[1].value);
+						break;
+					default:
+						throw `Invalid type.`;
+				}
+				spacer = spacer.slice(2);
+				displayText(`${spacer}Value: ${this.value}`);
 			}
 		}
 	}
@@ -144,5 +204,10 @@ function day16(input) {
 	}, 0);
 	displayText(`Version total: ${verTotal}`);
 
+	updateCaption(`The packet tree is shown.`);
+	updateCaption(`This shows the packet type, subpackets, and values.`);
+	updateCaption(`The answers are shown as well.`);
+	updateCaption(`Version total: ${verTotal}`);
+	updateCaption(`Final value: ${packets[0].value}`);
 
 }
