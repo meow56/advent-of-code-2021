@@ -254,4 +254,8 @@ function day15(input) {
 		}
 		displayText();
 	}
+	updateCaption(`A large graph is shown, dictating the route to be taken in part 2.`);
+	updateCaption(`Both solutions are also shown.`);
+	updateCaption(`Part 1: ${chitons[0][0].calcRiskPath("A", true)}`);
+	updateCaption(`Part 2: ${chitons[0][0].calcRiskPath("", false)}`);
 }
