@@ -1,7 +1,7 @@
 "use strict";
 
 function day17(input) {
-	//input = ``;
+	//input = `target area: x=20..30, y=-10..-5`;
 	const FILE_REGEX = /target area: x=(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)/gm;
 	let target;
 	let entry;
@@ -18,12 +18,13 @@ function day17(input) {
 	let highY = Math.max(target[1][0], target[1][1]);
 	let lowY = Math.min(target[1][0], target[1][1]);
 	let highestHitY = 0;
+	let targetCount = 0;
 	for(let initXVel = 0; initXVel <= highX; initXVel++) {
 		if(tri(initXVel) < lowX) {
 			// there's no way we'll ever reach the target.
 			continue;
 		}
-		for(let initYVel = lowY; initYVel < 1000000; initYVel++) {
+		for(let initYVel = lowY; initYVel < 100000; initYVel++) {
 			// For positive y, the max reached is tri(y).
 			// Then, it will hit y = 0 after 2y + 1 steps.
 			// n, n - 1, n - 2, n - 3, ..., 3, 2, 1 [n steps]
@@ -31,7 +32,6 @@ function day17(input) {
 			// -1, -2, -3, ... -(n - 3), -(n - 2), -(n - 1), -n [n steps]
 			if(initYVel > 0) {
 				let currentHighY = tri(initYVel);
-				if(currentHighY < highestHitY) continue;
 				let xVel = Math.max(0, initXVel - (2 * initYVel) - 1);
 				let yVel = -1 * initYVel - 1;
 				let xPos = tri(initXVel) - tri(xVel);
@@ -44,8 +44,9 @@ function day17(input) {
 						xVel--;
 					}
 					yVel--;
-					if(xPos >= lowX && yPos <= highY && yPos >= lowY && xPos <= highX) {
+					if(!hitTarget && xPos >= lowX && yPos <= highY && yPos >= lowY && xPos <= highX) {
 						hitTarget = true;
+						targetCount++;
 						break;
 					}
 				}
@@ -53,8 +54,7 @@ function day17(input) {
 					highestHitY = currentHighY;
 				}
 			} else {
-				/*let currentHighY = 0;
-				if(currentHighY < highestHitY) continue;
+				let currentHighY = 0;
 				let xVel = initXVel;
 				let yVel = initYVel;
 				let xPos = 0;
@@ -67,17 +67,23 @@ function day17(input) {
 						xVel--;
 					}
 					yVel--;
-					if(xPos >= lowX && yPos <= highY) {
+					if(!hitTarget && xPos >= lowX && yPos <= highY && yPos >= lowY && xPos <= highX) {
 						hitTarget = true;
+						targetCount++;
 						break;
 					}
 				}
 				if(hitTarget && highestHitY < currentHighY) {
 					highestHitY = currentHighY;
-				}*/
+				}
 			}
 		}
 	}
 
 	displayText(`Highest flex: ${highestHitY}`);
+	displayText(`Total hits: ${targetCount}`);
+	updateCaption(`The solutions are shown.`);
+	updateCaption(`Highest flex: ${highestHitY}`);
+	updateCaption(`Total hits: ${targetCount}`);
+
 }
