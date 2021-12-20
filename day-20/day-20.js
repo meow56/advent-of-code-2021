@@ -23,16 +23,14 @@ function day20(input) {
 		displayText(image[j].join(""));
 	}
 
-	const STEPS = 2;
+	const STEPS = 50;
 	for(let i = 0; i < STEPS; i++) {
 		let fill = (i % 2) ? "#" : ".";
-		console.log(fill);
 		let finalImage = [];
 		image.splice(0, 0, Array(image[0].length).fill(fill));
 		image.push(Array(image[0].length).fill(fill));
 		image.map(row => row.splice(0, 0, fill));
 		image.map(row => row.push(fill));
-		console.log(image);
 		for(let j = 0; j < image.length; j++) {
 			finalImage.push([]);
 		}
@@ -47,7 +45,6 @@ function day20(input) {
 					key += +((image[rI + 1][pI    ] || fill) === "#");
 					key += +((image[rI + 1][pI + 1] || fill) === "#");
 					finalImage[rI][pI] = lookupTable[parseInt(key, 2)];
-					console.log(key);
 				} else if(rI === image.length - 1) {
 					let key = "";
 					key += +((image[rI - 1][pI - 1] || fill) === "#");
@@ -58,7 +55,6 @@ function day20(input) {
 					key += +((row[pI + 1] || fill) === "#");
 					key += (fill === "#" ? "111" : "000");
 					finalImage[rI][pI] = lookupTable[parseInt(key, 2)];
-					console.log(key);
 				} else {
 					let key = "";
 					key += +((image[rI - 1][pI - 1] || fill) === "#");
@@ -71,7 +67,6 @@ function day20(input) {
 					key += +((image[rI + 1][pI    ] || fill) === "#");
 					key += +((image[rI + 1][pI + 1] || fill) === "#");
 					finalImage[rI][pI] = lookupTable[parseInt(key, 2)];
-					console.log(key);
 				}
 			});
 		});
@@ -81,20 +76,15 @@ function day20(input) {
 		for(let j = 0; j < image.length; j++) {
 			displayText(image[j].join(""));
 		}
-	}
-	console.log(image.flat());
-	let totalHash = 0;
-	for(let i = 0; i < image.length; i++) {
-		for(let j = 0; j < image[i].length; j++) {
-			if(image[i][j] === "#") {
-				totalHash++;
-			} else if(image[i][j] === ".") {
-
-			} else {
-				throw `image[${i}][${j}] is not # or .`;
-			}
+		if(i + 1 === 2) {
+			let totalHash = image.flat().reduce(((acc, e) => acc + +(e === "#")), 0);
+			displayText(`Total lit: ${totalHash}`);
+			updateCaption(`Part 1's answer: ${totalHash}`);
 		}
 	}
-	//image.flat().reduce(((acc, e) => acc + +(e === "#")), 0);
+	let totalHash = image.flat().reduce(((acc, e) => acc + +(e === "#")), 0);
 	displayText(`Total lit: ${totalHash}`);
+	updateCaption(`In addition to part 1's answer, a number of images are displayed.`);
+	updateCaption(`Each one shows the previous image's enhancement.`);
+	updateCaption(`Finally, part 2's answer is shown as well: ${totalHash}`);
 }
