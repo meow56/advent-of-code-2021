@@ -219,6 +219,7 @@ function day19(input) {
 	}
 
 	let actualBeacons = [];
+	let scanOffsets = [[0, 0, 0]];
 	actualBeacons.push(scanners.shift());
 	// Assume the first scanner is oriented correctly...
 
@@ -269,6 +270,7 @@ function day19(input) {
 					if(val >= 12) {
 						console.log(`orient found`);
 						let offset = key.split(",").map(e => +e);
+						scanOffsets.push(offset);
 						actualBeacons.push(reScan.map(function(coords) {
 							return [coords[0] + offset[0], 
 									coords[1] + offset[1],
@@ -300,5 +302,20 @@ function day19(input) {
 			return true;
 		}
 	});
+
+	let largestDist = 0;
+	for(let i = 0; i < scanOffsets.length; i++) {
+		for(let j = i; j < scanOffsets.length; j++) {
+			let dist = Math.abs(scanOffsets[i][0] - scanOffsets[j][0]) +
+					   Math.abs(scanOffsets[i][1] - scanOffsets[j][1]) +
+					   Math.abs(scanOffsets[i][2] - scanOffsets[j][2]);
+			if(dist > largestDist) {
+				largestDist = dist;
+			}
+		}
+	}
 	displayText(`Number of beacons: ${actualBeacons.length}`);
+	displayText(`Largest distance: ${largestDist}`);
+	updateCaption(`Number of beacons: ${actualBeacons.length}`);
+	updateCaption(`Largest distance: ${largestDist}`);
 }
