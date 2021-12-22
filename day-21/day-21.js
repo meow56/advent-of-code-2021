@@ -74,4 +74,168 @@ function day21(input) {
 	displayText(`Most winners: ${mostWinners}`);
 	updateCaption(`Part 1: ${losing * diceRolls}`);
 	updateCaption(`Most winners: ${mostWinners}`);
+
+	function roll() {
+		if(!this.currentlyRolling) {
+			this.currentlyRolling = true;
+			this.boards.clearText();
+			let toAdd = [];
+			for(let i = 0; i < this.currBoards.length; i++) {
+				let currState = this.currBoards[i];
+				if(currState[0] >= 21) {
+					this.currTotal[0] += currState[5];
+					this.finishedBoards.set(currState.slice(0, -2).join(","), [1, 0]);
+					this.currBoards.splice(i, 1);
+					i--;
+					continue;
+				}
+				if(currState[1] >= 21) {
+					this.currTotal[1] += currState[5];
+					this.finishedBoards.set(currState.slice(0, -2).join(","), [0, 1]);
+					this.currBoards.splice(i, 1);
+					i--;
+					continue;
+				}
+			}
+			let currState = this.currBoards[0]; // DFS
+			let thisAdd = [];
+			let totals = [0, 0];
+			for(let j = 3; j <= 9; j++) {
+				if(currState[4]) {
+					let moveTo = (currState[2] + j - 1) % 10 + 1;
+					let potential = [currState[0] + moveTo, 
+									 currState[1], 
+									 moveTo, 
+									 currState[3], 
+									 false, 
+									 currState[5] * this.freqs[j],
+									 currState[6] + 1];
+					if(!this.finishedBoards.has(potential.slice(0, -2).join(","))) {
+						thisAdd.push(potential);
+					} else {
+						totals[0] += this.finishedBoards.get(potential.slice(0, -2).join(","))[0];
+						totals[1] += this.finishedBoards.get(potential.slice(0, -2).join(","))[1];
+					}
+				} else {
+					let moveTo = (currState[3] + j - 1) % 10 + 1;
+					let potential = [currState[0], 
+									 currState[1] + moveTo, 
+									 currState[2], 
+									 moveTo, 
+									 true, 
+									 currState[5] * this.freqs[j],
+									 currState[6] + 1];
+					if(!this.finishedBoards.has(potential.slice(0, -2).join(","))) {
+						thisAdd.push(potential);
+					} else {
+						totals[0] += this.finishedBoards.get(potential.slice(0, -2).join(","))[0];
+						totals[1] += this.finishedBoards.get(potential.slice(0, -2).join(","))[1];
+					}
+				}
+			}
+			if(thisAdd.length === 0) {
+				this.currTotal[0] += totals[0] * currState[5];
+				this.currTotal[1] += totals[1] * currState[5];
+				this.finishedBoards.set(currState.slice(0, -2).join(","), totals);
+				this.currBoards.splice(0, 1);
+			} else {
+				toAdd.push(thisAdd);
+			}
+			toAdd = toAdd.flat();
+			this.currBoards.splice(0, 0, ...toAdd);
+			this.boards.displayText(`Total wins:`);
+			this.boards.displayText(`P1: ${this.currTotal[0]}`);
+			this.boards.displayText(`P2: ${this.currTotal[1]}`);
+			for(let i = 0; i < this.currBoards.length; i++) {
+				let currState = this.currBoards[i];
+				// 01  02  03  04 
+				// 10          05
+				// 09  08  07  06
+				this.boards.displayText(`Turn ${currState[6]}, P${+!currState[4] + 1}'s turn`);
+				let toDisplay = " 01  02  03  04 ".split("");
+				if(currState[2] <= 4) toDisplay[(currState[2] - 1) * 4] = "~";
+				if(currState[3] <= 4) toDisplay[currState[3] * 4 - 1] = "~";
+				toDisplay = toDisplay.join("");
+				toDisplay += ` P1: ${(currState[0]).toString().padStart(2, " ")} [`;
+				for(let i = 0; i < Math.min(currState[0], 21); i++) {
+					toDisplay += "█";
+				}
+				for(let i = currState[0]; i < 21; i++) {
+					toDisplay += " ";
+				}
+				toDisplay += "]";
+				this.boards.displayText(toDisplay);
+				toDisplay = " 10          05 ".split("");
+				if(currState[2] ===  5) toDisplay[12] = "~";
+				if(currState[2] === 10) toDisplay[0] = "~";
+				if(currState[3] ===  5) toDisplay[15] = "~";
+				if(currState[3] === 10) toDisplay[3] = "~";
+				toDisplay = toDisplay.join("");
+				toDisplay += ` * ${currState[5]}`;
+				this.boards.displayText(toDisplay);
+				toDisplay = " 09  08  07  06 ".split("");
+				if(currState[2] <= 9 && currState[2] >= 6) toDisplay[(9 - currState[2]) * 4] = "~";
+				if(currState[3] <= 9 && currState[3] >= 6) toDisplay[(10 - currState[3]) * 4 - 1] = "~";
+				toDisplay = toDisplay.join("");
+				toDisplay += ` P2: ${(currState[1]).toString().padStart(2, " ")} [`;
+				for(let i = 0; i < Math.min(currState[1], 21); i++) {
+					toDisplay += "█";
+				}
+				for(let i = currState[1]; i < 21; i++) {
+					toDisplay += " ";
+				}
+				toDisplay += "]";
+				this.boards.displayText(toDisplay);
+				this.boards.displayText();
+			}
+			this.currentlyRolling = false;
+		}
+	}
+	roll.boards = assignBlock("boards");
+	roll.currBoards = [[0, 0, p1Pos2, p2Pos2, true, 1, 1]];
+	roll.finishedBoards = new Map();
+	roll.freqs = [0, 0, 0, 1, 3, 6, 7, 6, 3, 1];
+	roll.currTotal = [0, 0];
+
+	let currState = roll.currBoards[0];
+	roll.boards.displayText(`Total wins:`);
+	roll.boards.displayText(`P1: 0`);
+	roll.boards.displayText(`P2: 0`);
+	roll.boards.displayText(`Turn ${currState[6]}, P${+!currState[4] + 1}'s turn`);
+	let toDisplay = " 01  02  03  04 ".split("");
+	if(currState[2] <= 4) toDisplay[(currState[2] - 1) * 4] = "~";
+	if(currState[3] <= 4) toDisplay[currState[3] * 4 - 1] = "~";
+	toDisplay = toDisplay.join("");
+	toDisplay += ` P1:  ${currState[0]} [`;
+	for(let i = 0; i < currState[0]; i++) {
+		toDisplay += "█";
+	}
+	for(let i = currState[0]; i < 21; i++) {
+		toDisplay += " ";
+	}
+	toDisplay += "]";
+	roll.boards.displayText(toDisplay);
+	toDisplay = " 10          05 ".split("");
+	if(currState[2] ===  5) toDisplay[12] = "~";
+	if(currState[2] === 10) toDisplay[0] = "~";
+	if(currState[3] ===  5) toDisplay[15] = "~";
+	if(currState[3] === 10) toDisplay[3] = "~";
+	toDisplay = toDisplay.join("");
+	toDisplay += ` * ${currState[5]}`;
+	roll.boards.displayText(toDisplay);
+	toDisplay = " 09  08  07  06 ".split("");
+	if(currState[2] <= 9 && currState[2] >= 6) toDisplay[(9 - currState[2]) * 4] = "~";
+	if(currState[3] <= 9 && currState[3] >= 6) toDisplay[(10 - currState[3]) * 4 - 1] = "~";
+	toDisplay = toDisplay.join("");
+	toDisplay += ` P2:  ${currState[1]} [`;
+	for(let i = 0; i < currState[1]; i++) {
+		toDisplay += "█";
+	}
+	for(let i = currState[1]; i < 21; i++) {
+		toDisplay += " ";
+	}
+	toDisplay += "]";
+	roll.boards.displayText(toDisplay);
+	roll.boards.displayText();
+	assignButton(roll.bind(roll), "Roll");
 }

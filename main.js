@@ -129,5 +129,13 @@ function assignBlock(id) {
 	return NEW_PRE;
 }
 
+function assignButton(callback, text) {
+	const buttons = document.getElementById("buttons");
+	let NEW_BUTTON = document.createElement("BUTTON");
+	NEW_BUTTON.textContent = text;
+	NEW_BUTTON.onclick = callback;
+	buttons.appendChild(NEW_BUTTON);
+	return NEW_BUTTON;
+}
 
 const devMode = false;
