@@ -32,38 +32,105 @@ function day23(input) {
 
 	const ENG_COST = new Map([["A", 1], ["B", 10], ["C", 100], ["D", 1000]]);
 	const TARGETS = new Map([["A", 2], ["B", 4], ["C", 6], ["D", 8]]);
+
+	let engCache = new Map();
+
 	function bruteForce(hall, rooms, currCosts) {
 		/*console.log(`Hall: ${hall.map(e => e === "." ? e : e[0]).join("")}
 Rooms: #${rooms.map(e => e[0]).map(e => e[1] ? e[0] : e[0].toLowerCase()).join("#")}#
        #${rooms.map(e => e[1]).map(e => e[1] ? e[0] : e[0].toLowerCase()).join("#")}#
 Current Cost: ${currCosts}`);*/
-		let finA = rooms[0][1] !== "." && rooms[0][1][0] === "A" ? 
-						(rooms[0][0] !== "." && rooms[0][0][0] === "A" ? 2 : 1) : 0;
-		let finB = rooms[1][1] !== "." && rooms[1][1][0] === "B" ? 
-						(rooms[1][0] !== "." && rooms[1][0][0] === "B" ? 2 : 1) : 0;
-		let finC = rooms[2][1] !== "." && rooms[2][1][0] === "C" ? 
-						(rooms[2][0] !== "." && rooms[2][0][0] === "C" ? 2 : 1) : 0;
-		let finD = rooms[3][1] !== "." && rooms[3][1][0] === "D" ? 
-						(rooms[3][0] !== "." && rooms[3][0][0] === "D" ? 2 : 1) : 0;
-		if(finA === 2 && finB === 2 && finC === 2 && finD === 2) {
+		let cacheKey = hall.map(e => e === "." ? "." : e[0]).join() + rooms.join();
+		if(engCache.has(cacheKey)) {
+			minEnergy = Math.min(minEnergy, currCosts + engCache.get(cacheKey));
+			return engCache.get(cacheKey);
+		}
+		let finA = 0;
+		for(let i = rooms[0].length - 1; i >= 0; i--) {
+			if(rooms[0][i] === ".") break;
+			if(rooms[0][i][0] !== "A") break;
+			finA++;
+		}
+		let finB = 0;
+		for(let i = rooms[1].length - 1; i >= 0; i--) {
+			if(rooms[1][i] === ".") break;
+			if(rooms[1][i][0] !== "B") break;
+			finB++;
+		}
+		let finC = 0;
+		for(let i = rooms[2].length - 1; i >= 0; i--) {
+			if(rooms[2][i] === ".") break;
+			if(rooms[2][i][0] !== "C") break;
+			finC++;
+		}
+		let finD = 0;
+		for(let i = rooms[3].length - 1; i >= 0; i--) {
+			if(rooms[3][i] === ".") break;
+			if(rooms[3][i][0] !== "D") break;
+			finD++;
+		}
+		if(finA === rooms[0].length && 
+		   finB === rooms[1].length && 
+		   finC === rooms[2].length && 
+		   finD === rooms[3].length) {
 			minEnergy = Math.min(minEnergy, currCosts);
-			return currCosts;
+			engCache.set(cacheKey, 0);
+			return 0;
 		}
 		let futureCosts = 0;
+		//let moveArr = new Map([["A", moveAI], ["B", moveBI], ["C", moveCI], ["D", moveDI]]);
 		hall.forEach(function(square, index) {
 			if(square !== ".") {
 				let moveDist = Math.abs(TARGETS.get(square[0]) - index) + 1;
 				futureCosts += moveDist * ENG_COST.get(square[0]);
 			}
 		});
-		if(currCosts + futureCosts > minEnergy) {
+		rooms.forEach(function(room, rI) {
+			room.forEach(function(square, index) {
+				if(square !== ".") {
+					if(!square[1]) {
+						let moveDist = index + 1 + Math.abs(TARGETS.get(square[0]) - ((rI + 1) * 2)) + 1;
+						futureCosts += moveDist * ENG_COST.get(square[0]);
+					}
+				}
+			});
+		});
+		if(currCosts + futureCosts >= minEnergy) {
 			//console.log(`Futures too high.`);
-			return;
+			return 1e308;
 		}
-		let moveA = rooms[0][0] !== "." ? rooms[0][0] : rooms[0][1];
-		let moveB = rooms[1][0] !== "." ? rooms[1][0] : rooms[1][1];
-		let moveC = rooms[2][0] !== "." ? rooms[2][0] : rooms[2][1];
-		let moveD = rooms[3][0] !== "." ? rooms[3][0] : rooms[3][1];
+		let i = 0;
+		let moveA = ".";
+		let moveAI;
+		while(moveA === "." && i < rooms[0].length) {
+			moveAI = i;
+			moveA = rooms[0][i++];
+		}
+		if(moveA === ".") moveAI++;
+		i = 0;
+		let moveB = ".";
+		let moveBI;
+		while(moveB === "." && i < rooms[1].length) {
+			moveBI = i;
+			moveB = rooms[1][i++];
+		}
+		if(moveB === ".") moveBI++;
+		i = 0;
+		let moveC = ".";
+		let moveCI;
+		while(moveC === "." && i < rooms[2].length) {
+			moveCI = i;
+			moveC = rooms[2][i++];
+		}
+		if(moveC === ".") moveCI++;
+		i = 0;
+		let moveD = ".";
+		let moveDI;
+		while(moveD === "." && i < rooms[3].length) {
+			moveDI = i;
+			moveD = rooms[3][i++];
+		}
+		if(moveD === ".") moveDI++;
 
 		let destA = [];
 		if(moveA !== ".") {
@@ -79,15 +146,17 @@ Current Cost: ${currCosts}`);*/
 				}
 			}
 		}
+
+		let possibleEngs = [];
 		destA.forEach(function(destination) {
 			if(moveA[1]) return;
-			let tempHall = hall.slice();
+			let tempHall = hall.slice().map(e => e === "." ? "." : e.slice());
 			tempHall[destination] = [moveA[0], true];
-			let moveDist = Math.abs(2 - destination) + (rooms[0][0] !== "." ? 1 : 2);
+			let moveDist = Math.abs(2 - destination) + moveAI + 1;
 			moveDist *= ENG_COST.get(moveA[0]);
-			let newRoom = rooms.slice();
-			newRoom[0] = rooms[0][0] !== "." ? [".", rooms[0][1]] : [".", "."];
-			bruteForce(tempHall, newRoom, currCosts + moveDist);
+			let newRoom = rooms.slice().map(e => e === "." ? "." : e.slice());
+			newRoom[0][moveAI] = ".";
+			possibleEngs.push(moveDist + bruteForce(tempHall, newRoom, currCosts + moveDist));
 		});
 
 		let destB = [];
@@ -106,13 +175,13 @@ Current Cost: ${currCosts}`);*/
 		}
 		destB.forEach(function(destination) {
 			if(moveB[1]) return;
-			let tempHall = hall.slice();
+			let tempHall = hall.slice().map(e => e === "." ? "." : e.slice());
 			tempHall[destination] = [moveB[0], true];
-			let moveDist = Math.abs(4 - destination) + (rooms[1][0] !== "." ? 1 : 2);
+			let moveDist = Math.abs(4 - destination) + moveBI + 1;
 			moveDist *= ENG_COST.get(moveB[0]);
-			let newRoom = rooms.slice();
-			newRoom[1] = rooms[1][0] !== "." ? [".", rooms[1][1]] : [".", "."];
-			bruteForce(tempHall, newRoom, currCosts + moveDist);
+			let newRoom = rooms.slice().map(e => e === "." ? "." : e.slice());
+			newRoom[1][moveBI] = ".";
+			possibleEngs.push(moveDist + bruteForce(tempHall, newRoom, currCosts + moveDist));
 		});
 
 		let destC = [];
@@ -131,13 +200,13 @@ Current Cost: ${currCosts}`);*/
 		}
 		destC.forEach(function(destination) {
 			if(moveC[1]) return;
-			let tempHall = hall.slice();
+			let tempHall = hall.slice().map(e => e === "." ? "." : e.slice());
 			tempHall[destination] = [moveC[0], true];
-			let moveDist = Math.abs(6 - destination) + (rooms[2][0] !== "." ? 1 : 2);
+			let moveDist = Math.abs(6 - destination) + moveCI + 1;
 			moveDist *= ENG_COST.get(moveC[0]);
-			let newRoom = rooms.slice();
-			newRoom[2] = rooms[2][0] !== "." ? [".", rooms[2][1]] : [".", "."];
-			bruteForce(tempHall, newRoom, currCosts + moveDist);
+			let newRoom = rooms.slice().map(e => e === "." ? "." : e.slice());
+			newRoom[2][moveCI] = ".";
+			possibleEngs.push(moveDist + bruteForce(tempHall, newRoom, currCosts + moveDist));
 		});
 
 		let destD = [];
@@ -156,106 +225,105 @@ Current Cost: ${currCosts}`);*/
 		}
 		destD.forEach(function(destination) {
 			if(moveD[1]) return;
-			let tempHall = hall.slice();
+			let tempHall = hall.slice().map(e => e === "." ? "." : e.slice());
 			tempHall[destination] = [moveD[0], true];
-			let moveDist = Math.abs(8 - destination) + (rooms[3][0] !== "." ? 1 : 2);
+			let moveDist = Math.abs(8 - destination) + moveDI + 1;
 			moveDist *= ENG_COST.get(moveD[0]);
-			let newRoom = rooms.slice();
-			newRoom[3] = rooms[3][0] !== "." ? [".", rooms[3][1]] : [".", "."];
-			bruteForce(tempHall, newRoom, currCosts + moveDist);
+			let newRoom = rooms.slice().map(e => e === "." ? "." : e.slice());
+			newRoom[3][moveDI] = ".";
+			possibleEngs.push(moveDist + bruteForce(tempHall, newRoom, currCosts + moveDist));
 		});
 
 		hall.forEach(function(space, index) {
 			if(space === ".") return;
 			switch(space[0]) {
 				case "A":
-					if(rooms[0][0] === "." && (rooms[0][1] === "." || rooms[0][1][0] === space[0])) {
+					if(moveAI === rooms[0].length || rooms[0][moveAI][1]) {
 						for(let i = Math.min(2, index); i < Math.max(2, index); i++) {
 							if(i !== index && hall[i] !== ".") return;
 						}
-						let newHall = hall.slice();
+						let newHall = hall.slice().map(e => e === "." ? "." : e.slice());
 						newHall[index] = ".";
-						let newRooms = rooms.slice();
+						let newRooms = rooms.slice().map(e => e === "." ? "." : e.slice());
 						let moveDist = Math.abs(2 - index);
-						if(rooms[0][1][0] === space[0]) {
-							moveDist++;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[0] = [space, space];
-						} else {
-							moveDist += 2;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[0] = [".", space];
-						}
-						bruteForce(newHall, newRooms, currCosts + moveDist);
+						moveDist += moveAI;
+						moveDist *= ENG_COST.get(space[0]);
+						newRooms[0][moveAI - 1] = space;
+						possibleEngs.push(moveDist + bruteForce(newHall, newRooms, currCosts + moveDist));
 					}
 					break;
 				case "B":
-					if(rooms[1][0] === "." && (rooms[1][1] === "." || rooms[1][1][0] === space[0])) {
+					if(moveBI === rooms[1].length || rooms[1][moveBI][1]) {
 						for(let i = Math.min(4, index); i < Math.max(4, index); i++) {
 							if(i !== index && hall[i] !== ".") return;
 						}
-						let newHall = hall.slice();
+						let newHall = hall.slice().map(e => e === "." ? "." : e.slice());
 						newHall[index] = ".";
-						let newRooms = rooms.slice();
+						let newRooms = rooms.slice().map(e => e === "." ? "." : e.slice());
 						let moveDist = Math.abs(4 - index);
-						if(rooms[1][1][0] === space[0]) {
-							moveDist++;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[1] = [space, space];
-						} else {
-							moveDist += 2;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[1] = [".", space];
-						}
-						bruteForce(newHall, newRooms, currCosts + moveDist);
+						moveDist += moveBI;
+						moveDist *= ENG_COST.get(space[0]);
+						newRooms[1][moveBI - 1] = space;
+						possibleEngs.push(moveDist + bruteForce(newHall, newRooms, currCosts + moveDist));
 					}
 					break;
 				case "C":
-					if(rooms[2][0] === "." && (rooms[2][1] === "." || rooms[2][1][0] === space[0])) {
+					if(moveCI === rooms[2].length || rooms[2][moveCI][1]) {
 						for(let i = Math.min(6, index); i < Math.max(6, index); i++) {
 							if(i !== index && hall[i] !== ".") return;
 						}
-						let newHall = hall.slice();
+						let newHall = hall.slice().map(e => e === "." ? "." : e.slice());
 						newHall[index] = ".";
-						let newRooms = rooms.slice();
+						let newRooms = rooms.slice().map(e => e === "." ? "." : e.slice());
 						let moveDist = Math.abs(6 - index);
-						if(rooms[2][1][0] === space[0]) {
-							moveDist++;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[2] = [space, space];
-						} else {
-							moveDist += 2;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[2] = [".", space];
-						}
-						bruteForce(newHall, newRooms, currCosts + moveDist);
+						moveDist += moveCI;
+						moveDist *= ENG_COST.get(space[0]);
+						newRooms[2][moveCI - 1] = space;
+						possibleEngs.push(moveDist + bruteForce(newHall, newRooms, currCosts + moveDist));
 					}
 					break;
 				case "D":
-					if(rooms[3][0] === "." && (rooms[3][1] === "." || rooms[3][1][0] === space[0])) {
+					if(moveDI === rooms[3].length || rooms[3][moveDI][1]) {
 						for(let i = Math.min(8, index); i < Math.max(8, index); i++) {
 							if(i !== index && hall[i] !== ".") return;
 						}
-						let newHall = hall.slice();
+						let newHall = hall.slice().map(e => e === "." ? "." : e.slice());
 						newHall[index] = ".";
-						let newRooms = rooms.slice();
+						let newRooms = rooms.slice().map(e => e === "." ? "." : e.slice());
 						let moveDist = Math.abs(8 - index);
-						if(rooms[3][1][0] === space[0]) {
-							moveDist++;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[3] = [space, space];
-						} else {
-							moveDist += 2;
-							moveDist *= ENG_COST.get(space[0]);
-							newRooms[3] = [".", space];
-						}
-						bruteForce(newHall, newRooms, currCosts + moveDist);
+						moveDist += moveDI;
+						moveDist *= ENG_COST.get(space[0]);
+						newRooms[3][moveDI - 1] = space;
+						possibleEngs.push(moveDist + bruteForce(newHall, newRooms, currCosts + moveDist));
 					}
 					break;
 			}
 		});
-		//console.log(`This route has no solution.`);
+		if(possibleEngs.length === 0) {
+			//console.log(`This route has no solution.`);
+			engCache.set(cacheKey, 1e308);
+			return 1e308;
+		} else {
+			engCache.set(cacheKey, Math.min(...possibleEngs));
+			return Math.min(...possibleEngs);
+		}
 	}
-	bruteForce(hallway, [roomA, roomB, roomC, roomD], 0);
+	bruteForce(hallway.slice(), [roomA.slice(), roomB.slice(), roomC.slice(), roomD.slice()], 0);
 	displayText(`Min energy: ${minEnergy}`);
+	//throw `:(`;
+	minEnergy = 1e308;
+	roomA[0][1] = false;
+	roomA[1][1] = roomA[1][0] === "A";
+	roomB[0][1] = false;
+	roomB[1][1] = roomB[1][0] === "B";
+	roomC[0][1] = false;
+	roomC[1][1] = roomC[1][0] === "C";
+	roomD[0][1] = false;
+	roomD[1][1] = roomD[1][0] === "D";
+	roomA.splice(1, 0, ["D", false], ["D", false]);
+	roomB.splice(1, 0, ["C", false], ["B", false]);
+	roomC.splice(1, 0, ["B", false], ["A", false]);
+	roomD.splice(1, 0, ["A", false], ["C", false]);
+	bruteForce(hallway.slice(), [roomA.slice(), roomB.slice(), roomC.slice(), roomD.slice()], 0);
+	displayText(`Min energy, 2!: ${minEnergy}`);
 }
