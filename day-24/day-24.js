@@ -201,7 +201,7 @@ function day24(input) {
 				throw `Unknown command ${arg0}`;
 		}
 	}
-	let subNum = 99999999999999;
+	let subNum = 11189161113216;
 	let highSubNum = 0;
 	let evalCache = new Map();
 	function unshallowCopy(array) {
@@ -229,7 +229,7 @@ function day24(input) {
 		if(subNum % 100000 === 0) console.log(subNum);
 		let inpStr = subNum.toString().split("").map(e => +e);
 		if(inpStr.some(e => e === 0)) {
-			subNum--;
+			subNum++;
 			continue;
 		}
 		reset();
@@ -238,7 +238,7 @@ function day24(input) {
 			highSubNum = subNum;
 			break;
 		}
-		subNum--;
+		subNum++;
 	}
-	displayText(`Highest number: ${highSubNum}`);
+	displayText(`Lowest number: ${highSubNum}`);
 }
