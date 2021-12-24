@@ -78,7 +78,6 @@ Current Cost: ${currCosts}`);*/
 			return 0;
 		}
 		let futureCosts = 0;
-		//let moveArr = new Map([["A", moveAI], ["B", moveBI], ["C", moveCI], ["D", moveDI]]);
 		hall.forEach(function(square, index) {
 			if(square !== ".") {
 				let moveDist = Math.abs(TARGETS.get(square[0]) - index) + 1;
