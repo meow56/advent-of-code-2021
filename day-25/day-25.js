@@ -67,7 +67,6 @@ v.v..>>v.v
 		}
 		cucumbers = nextStep;
 		display.push(cucumbers.slice().map(e => e.slice()));
-		//if(stepCount > 60) throw `no.`;
 	}
 
 	for(let j = 0; j < display.length; j += 10) {
@@ -76,4 +75,17 @@ v.v..>>v.v
 			displayText(display[j][i].join(""));
 		}
 	}
+
+	const CHM_CLR = ["#cf2501", "#0dc92c", "#ffffff"];
+	function christmas(text) {
+		let newText = "";
+		let formatting = [];
+		for(let i = 0; i < text.length; i++) {
+			newText += "%c";
+			newText += text[i];
+			formatting.push("color:" + CHM_CLR[i % CHM_CLR.length]);
+		}
+		console.log(newText, ...formatting);
+	}
+	christmas(`Merry Christmas and Happy Holidays!`);
 }
