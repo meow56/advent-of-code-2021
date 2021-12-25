@@ -69,12 +69,18 @@ v.v..>>v.v
 		display.push(cucumbers.slice().map(e => e.slice()));
 	}
 
-	for(let j = 0; j < display.length; j += 10) {
-		displayText(`Step ${j + 1}:`);
-		for(let i = 0; i < display[j].length; i++) {
-			displayText(display[j][i].join(""));
+	let animBlock = assignBlock("cucumbers");
+	const ANIM_INTERVAL = 500;
+	function animate(frame) {
+		if(frame === display.length) return;
+		animBlock.clearText();
+		animBlock.displayText(`Step ${frame + 1}`);
+		for(let i = 0; i < display[frame].length; i++) {
+			animBlock.displayText(display[frame][i].map(e => e === "." ? " " : e).join(""));
 		}
+		setTimeout(animate, ANIM_INTERVAL, frame + 1);
 	}
+	animate(0);
 
 	const CHM_CLR = ["#cf2501", "#0dc92c", "#ffffff"];
 	function christmas(text) {
