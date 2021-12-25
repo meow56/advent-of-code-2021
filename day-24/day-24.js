@@ -217,14 +217,283 @@ function day24(input) {
 			inpStr.fill(j);
 		}
 	}
-	let divZ = instructions.filter(e => e[0] === "div" && e[1] === "z").map(e => e[2]);
-	divZ = divZ.map(function(num, index) {
+
+	let unDivZ = instructions.filter(e => e[0] === "div" && e[1] === "z").map(e => +e[2]);
+	unDivZ = unDivZ.map(function(num, index) {
 		let temp = 1;
-		for(let i = index; i < divZ.length; i++) {
-			temp *= divZ[i];
+		for(let i = index; i < unDivZ.length; i++) {
+			temp *= unDivZ[i];
 		}
 		return temp;
 	});
+	function reduce(states) {
+		states = states.sort(function(a, b) {
+			return a[3] - b[3];
+		});
+		let numIn = states[0][4].length;
+		let newStates = [];
+		let included = [];
+		for(let i = 0; i < states.length; i++) {
+			if(states[i][3] > unDivZ[i]) continue;
+			if(included[i]) continue;
+			let matchXYZ = [];
+			for(let j = i; j < states.length; j++) {
+				if(states[j][3] !== states[i][3]) break;
+				included[j] = true;
+				matchXYZ.push(states[j]);
+			}
+			newStates.push(matchXYZ.reduce(function(acc, elem) {
+				return elem[0] > acc[0] ? elem : acc;
+			}));
+		}
+		return newStates;
+	}
+
+	let states = [[0, 0, 0, 0, ""]];
+	while(instructions.length > 0) {
+		let thisInst = instructions.shift();
+		console.log(`${thisInst} with ${states.length} states. ${instructions.length} instructions left.`);
+		let arg2;
+		if(parseInt(thisInst[2], 10) || thisInst[2] === "0") {
+			arg2 = parseInt(thisInst[2], 10);
+		} else {
+			switch(thisInst[2]) {
+				case "w":
+					arg2 = [0];
+					break;
+				case "x":
+					arg2 = [1];
+					break;
+				case "y":
+					arg2 = [2];
+					break;
+				case "z":
+					arg2 = [3];
+					break;
+			}
+		}
+		switch(thisInst[0]) {
+			case "inp":
+				states = reduce(states);
+				console.log(`Reduction complete`);
+				states = states.flatMap(function(state) {
+					let retVal = [];
+					for(let i = 1; i <= 9; i++) {
+						retVal.push([i, state[1], state[2], state[3], state[4] + i]);
+					}
+					return retVal;
+				});
+				break;
+			case "add":
+				states = states.map(function(state) {
+					switch(thisInst[1]) {
+						case "w":
+							if(typeof arg2 === "number") {
+								state[0] += arg2;
+							} else {
+								state[0] += state[arg2[0]];
+							}
+							return state;
+						case "x":
+							if(typeof arg2 === "number") {
+								state[1] += arg2;
+							} else {
+								state[1] += state[arg2[0]];
+							}
+							return state;
+						case "y":
+							if(typeof arg2 === "number") {
+								state[2] += arg2;
+							} else {
+								state[2] += state[arg2[0]];
+							}
+							return state;
+						case "z":
+							if(typeof arg2 === "number") {
+								state[3] += arg2;
+							} else {
+								state[3] += state[arg2[0]];
+							}
+							return state;
+					}
+				});
+				break;
+			case "mul":
+				states = states.map(function(state) {
+					switch(thisInst[1]) {
+						case "w":
+							if(typeof arg2 === "number") {
+								state[0] *= arg2;
+							} else {
+								state[0] *= state[arg2[0]];
+							}
+							return state;
+						case "x":
+							if(typeof arg2 === "number") {
+								state[1] *= arg2;
+							} else {
+								state[1] *= state[arg2[0]];
+							}
+							return state;
+						case "y":
+							if(typeof arg2 === "number") {
+								state[2] *= arg2;
+							} else {
+								state[2] *= state[arg2[0]];
+							}
+							return state;
+						case "z":
+							if(typeof arg2 === "number") {
+								state[3] *= arg2;
+							} else {
+								state[3] *= state[arg2[0]];
+							}
+							return state;
+					}
+				});
+				break;
+			case "div":
+				states = states.map(function(state) {
+					switch(thisInst[1]) {
+						case "w":
+							if(typeof arg2 === "number") {
+								state[0] = rTZ(state[0] / arg2);
+							} else {
+								state[0] = rTZ(state[0] / state[arg2[0]]);
+							}
+							return state;
+						case "x":
+							if(typeof arg2 === "number") {
+								state[1] = rTZ(state[1] / arg2);
+							} else {
+								state[1] = rTZ(state[1] / state[arg2[0]]);
+							}
+							return state;
+						case "y":
+							if(typeof arg2 === "number") {
+								state[2] = rTZ(state[2] / arg2);
+							} else {
+								state[2] = rTZ(state[2] / state[arg2[0]]);
+							}
+							return state;
+						case "z":
+							if(typeof arg2 === "number") {
+								state[3] = rTZ(state[3] / arg2);
+							} else {
+								state[3] = rTZ(state[3] / state[arg2[0]]);
+							}
+							return state;
+					}
+				});
+				break;
+			case "mod":
+				states = states.map(function(state) {
+					switch(thisInst[1]) {
+						case "w":
+							if(typeof arg2 === "number") {
+								state[0] %= arg2;
+							} else {
+								state[0] %= state[arg2[0]];
+							}
+							return state;
+						case "x":
+							if(typeof arg2 === "number") {
+								state[1] %= arg2;
+							} else {
+								state[1] %= state[arg2[0]];
+							}
+							return state;
+						case "y":
+							if(typeof arg2 === "number") {
+								state[2] %= arg2;
+							} else {
+								state[2] %= state[arg2[0]];
+							}
+							return state;
+						case "z":
+							if(typeof arg2 === "number") {
+								state[3] %= arg2;
+							} else {
+								state[3] %= state[arg2[0]];
+							}
+							return state;
+					}
+				});
+				break;
+			case "eql":
+				states = states.map(function(state) {
+					switch(thisInst[1]) {
+						case "w":
+							if(typeof arg2 === "number") {
+								state[0] = +(state[0] === arg2);
+							} else {
+								state[0] = +(state[0] === state[arg2[0]]);
+							}
+							return state;
+						case "x":
+							if(typeof arg2 === "number") {
+								state[1] = +(state[1] === arg2);
+							} else {
+								state[1] = +(state[1] === state[arg2[0]]);
+							}
+							return state;
+						case "y":
+							if(typeof arg2 === "number") {
+								state[2] = +(state[2] === arg2);
+							} else {
+								state[2] = +(state[2] === state[arg2[0]]);
+							}
+							return state;
+						case "z":
+							if(typeof arg2 === "number") {
+								state[3] = +(state[3] === arg2);
+							} else {
+								state[3] = +(state[3] === state[arg2[0]]);
+							}
+							return state;
+					}
+				});
+				break;
+		}
+	}
+	let uniqueStates = parallelGreater(instructions.slice().map(e => e.slice()), [[0, 0, 0, 0, ""]]);
+	uniqueStates = uniqueStates.map(e => e[4]);
+	let highestVal = Math.max(...uniqueStates);
+	displayText(`Highest val: ${highestVal}`);
+
+	throw 'done';
+	let divZ = instructions.filter(e => e[0] === "div" && e[1] === "z").map(e => +e[2]);
+	let offset = instructions.filter(e => e[0] === "add" && 
+										  e[1] === "x" && 
+										  typeof +e[2] === "number").map(e => +e[2]);
+	let offset2 = instructions.filter(e => e[0] === "add" &&
+										   e[1] === "y" &&
+										   typeof +e[2] === "number")
+							  .filter((e, ind) => (ind + 1) % 3 === 0).map(e => +e[2]);
+	for(let moNo = 11111111111111; moNo < 100000000000000; moNo++) {
+		let inpStr = moNo.toString().split("").map(e => +e).reverse();
+		if(inpStr.some(e => e === 0)) {
+			subNum++;
+			continue;
+		}
+		let Z = [0];
+		for(let i = 0; i < inpStr.length; i++) {
+			if(Z[Z.length - 1] + offset[i] === inpStr[i]) {
+				if(divZ[i] === 26) {
+					Z.pop();
+				}
+			} else {
+				if(divZ[i] === 26) {
+					Z[Z.length - 1] = inpStr[i] + offset2[i];
+				} else {
+					Z.push(inpStr[i] + offset2[i]);
+				}
+			}
+		}
+		if(Z.length === 1 && Z[0] === 0) {
+
+		}
+	}
 	while(subNum < 100000000000000) {
 		if(subNum % 100000 === 0) console.log(subNum);
 		let inpStr = subNum.toString().split("").map(e => +e);
